@@ -1,0 +1,8 @@
+prefix=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/devel
+
+Name: pepper_teleop
+Description: Description of pepper_teleop
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/invite/Documents/Pepper_Project/catkin_pepper_ws/devel/lib 
+Requires: 
