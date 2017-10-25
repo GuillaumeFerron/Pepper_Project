@@ -2,7 +2,7 @@
 # -*- encoding: UTF-8 -*-
 
 """Example: Use setExternalCollisionProtectionEnabled Method"""
-import naoqi
+
 import qi
 import argparse
 import sys
