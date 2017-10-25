@@ -1,0 +1,8 @@
+prefix=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/install
+
+Name: pepper_project_rob
+Description: Description of pepper_project_rob
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/invite/Documents/Pepper_Project/catkin_pepper_ws/install/lib 
+Requires: 

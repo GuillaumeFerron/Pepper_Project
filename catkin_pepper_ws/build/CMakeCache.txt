@@ -301,6 +301,12 @@ lib:FILEPATH=/opt/ros/indigo/lib/libxmlrpcpp.so
 message_runtime_DIR:PATH=/opt/ros/indigo/share/message_runtime/cmake
 
 //Value Computed by CMake
+pepper_project_rob_BINARY_DIR:STATIC=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/pepper_project_rob
+
+//Value Computed by CMake
+pepper_project_rob_SOURCE_DIR:STATIC=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/src/pepper_project_rob
+
+//Value Computed by CMake
 pepper_teleop_BINARY_DIR:STATIC=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/pepper-ros-teleop
 
 //Value Computed by CMake
@@ -321,6 +327,9 @@ roscpp_traits_DIR:PATH=/opt/ros/indigo/share/roscpp_traits/cmake
 //The directory containing a CMake configuration file for rosgraph_msgs.
 rosgraph_msgs_DIR:PATH=/opt/ros/indigo/share/rosgraph_msgs/cmake
 
+//The directory containing a CMake configuration file for rospy.
+rospy_DIR:PATH=/opt/ros/indigo/share/rospy/cmake
+
 //The directory containing a CMake configuration file for rostime.
 rostime_DIR:PATH=/opt/ros/indigo/share/rostime/cmake
 
@@ -329,6 +338,12 @@ sensor_msgs_DIR:PATH=/opt/ros/indigo/share/sensor_msgs/cmake
 
 //The directory containing a CMake configuration file for std_msgs.
 std_msgs_DIR:PATH=/opt/ros/indigo/share/std_msgs/cmake
+
+//The directory containing a CMake configuration file for std_srvs.
+std_srvs_DIR:PATH=/opt/ros/indigo/share/std_srvs/cmake
+
+//The directory containing a CMake configuration file for turtlesim.
+turtlesim_DIR:PATH=/opt/ros/indigo/share/turtlesim/cmake
 
 //The directory containing a CMake configuration file for xmlrpcpp.
 xmlrpcpp_DIR:PATH=/opt/ros/indigo/share/xmlrpcpp/cmake
@@ -435,7 +450,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=3
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=4
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

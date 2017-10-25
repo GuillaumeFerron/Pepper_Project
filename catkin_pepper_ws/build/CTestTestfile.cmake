@@ -6,3 +6,4 @@
 # testing this directory and lists subdirectories to be tested as well.
 SUBDIRS(gtest)
 SUBDIRS(pepper-ros-teleop)
+SUBDIRS(pepper_project_rob)

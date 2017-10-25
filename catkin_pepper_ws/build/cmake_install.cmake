@@ -118,6 +118,7 @@ IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   INCLUDE("/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/gtest/cmake_install.cmake")
   INCLUDE("/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/pepper-ros-teleop/cmake_install.cmake")
+  INCLUDE("/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/pepper_project_rob/cmake_install.cmake")
 
 ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
 
