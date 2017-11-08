@@ -61,9 +61,10 @@ def get_lasers(data):
 			if data.ranges[i]<1.0:
 				print("- Obstacle:")
 				print(angle)
-	tw.linear.x=tw.linear.x/(nbobstacles*5.0)
-	tw.linear.y=tw.linear.y/(nbobstacles*5.0)
-	tw.angular.z=tw.angular.z/(nbobstacles*5.0)
+	if nbobstacles != 0:
+		tw.linear.x=tw.linear.x/(nbobstacles*5.0)
+		tw.linear.y=tw.linear.y/(nbobstacles*5.0)
+		tw.angular.z=tw.angular.z/(nbobstacles*5.0)
 	global laser_twist
 	laser_twist = tw	
 
