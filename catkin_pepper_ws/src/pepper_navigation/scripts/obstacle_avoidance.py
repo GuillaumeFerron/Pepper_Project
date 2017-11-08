@@ -4,6 +4,7 @@ import rospy	# Ros module for python
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 from math import *
+import numpy
 
 
 vel = None
@@ -15,17 +16,26 @@ def get_joy(data):
 	global laser_twist
 	global vel
 	global cmd_twist
-	if(data.linear.x==0.0 and data.linear.y==0.0 and data.angular.z==0.0):
+	
+	delta = 0.3 #minimize repulsion vector
+	if(data.linear.x==0.0 and data.linear.y==0.0 ):
 		cmd_twist.linear.x=0.0
 		cmd_twist.linear.y=0.0
-		cmd_twist.angular.z=0.0
 	else:
-		cmd_twist.linear.x=max(min(data.linear.x+laser_twist.linear.x,1.0),-1.0)*0.5
-		cmd_twist.linear.y=max(min(data.linear.y+laser_twist.linear.y,1.0),-1.0)*0.5
+		cmd_twist.linear.x=max(min(data.linear.x+delta*laser_twist.linear.x,1.0),-1.0)
+		cmd_twist.linear.y=max(min(data.linear.y+delta*laser_twist.linear.y,1.0),-1.0)
+		"""i =1
+		#check if V' is opposite on x and y to V:
+		while(cmd_twist.linear.x * data.linear.x + cmd_twist.linear.y*data.linear.y <= 0):
+			print("in while")
+			cmd_twist.linear.x=max(min(data.linear.x+pow(delta,i)*laser_twist.linear.x,1.0),-1.0)
+			cmd_twist.linear.y=max(min(data.linear.y+pow(delta,i)*laser_twist.linear.y,1.0),-1.0)
+			i=+1
 		#if data.angular.z==0.0:
 		#	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
 		#else:
-		cmd_twist.angular.z=data.angular.z
+		print("out of while")"""
+	cmd_twist.angular.z=data.angular.z
 
 	cmd_twist.linear.z=0.0
 	cmd_twist.angular.x=0.0
@@ -51,33 +61,40 @@ def get_lasers(data):
 	tw.angular.y=0.0
 	tw.angular.z=0.0
 	nbobstacles=0.0
-	for i in range(61):
+	for i in range(61):#61 points on laser 3*15 + 2*8 points on dead angles 
 		angle=data.angle_min+i*data.angle_increment
-		if(data.ranges[i]>0.0 and data.ranges[i]<1.0):
+		if(data.ranges[i]>0.0 and data.ranges[i]<1):
 			nbobstacles=nbobstacles+1.0
-			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i])
-			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i])
-			tw.angular.z=tw.angular.z-angle/(data.ranges[i])
-			if data.ranges[i]<1.0:
-				print("- Obstacle:")
-				print(angle)
-	if nbobstacles != 0:
-		tw.linear.x=tw.linear.x/(nbobstacles*5.0)
-		tw.linear.y=tw.linear.y/(nbobstacles*5.0)
-		tw.angular.z=tw.angular.z/(nbobstacles*5.0)
+			# - for repulsive vector 
+			# the x value of the current repulsive vector is d*cos(angle)
+			# since we want the 1/d*d*d * OA 
+			# we add d*cos(angle)/d*d*d = cos(angle)/d*d
+			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i]*data.ranges[i])
+			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i]*data.ranges[i])
+
+			#tw.angular.z= tw.angular.z-angle/(data.ranges[i])
+			print("- Obstacle:")
+			print(angle, tw.linear.x, tw.linear.y)
+	if nbobstacles != 0: #normalization
+		tw.linear.x=tw.linear.x/(nbobstacles)
+		tw.linear.y=tw.linear.y/(nbobstacles)
+		#tw.angular.z=tw.angular.z/(nbobstacles)
 	global laser_twist
-	laser_twist = tw	
+	laser_twist = tw 
+	print("lt : ", tw.linear.x, tw.linear.y)
+	
 
 def obstacle_avoidance():
 	# Publish the 'cmd_vel' topic using Twist messages
-	global vel	
+	global vel
+	rospy.init_node('pepper_master')	
 	vel = rospy.Publisher('cmd_vel', Twist, queue_size = 10)
 	# Listen to the lasers and joy
 	lasers = rospy.Subscriber("/pepper_robot/laser", LaserScan, get_lasers)
 	joy_cmd = rospy.Subscriber("joy_twist", Twist, get_joy) #joy_twist
 
 	# Node name
-	rospy.init_node('pepper_master')
+	
 #	rate = rospy.Rate(10) # 10hz
 #	cmd = Twist()
 #	cmd.linear.x = 1.0 # joystick comand
@@ -92,4 +109,5 @@ def obstacle_avoidance():
 	
 if __name__ == '__main__':
 	obstacle_avoidance()
+
 
