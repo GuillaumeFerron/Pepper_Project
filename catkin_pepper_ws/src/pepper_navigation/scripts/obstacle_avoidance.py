@@ -17,11 +17,10 @@ def get_joy(data):
 	global vel
 	global cmd_twist
 	
-	delta = 0.1 #minimize repulsion vector
-	if(data.linear.x==0.0 and data.linear.y==0.0 and data.angular.z==0.0):
+	delta = 0.3 #minimize repulsion vector
+	if(data.linear.x==0.0 and data.linear.y==0.0 ):
 		cmd_twist.linear.x=0.0
 		cmd_twist.linear.y=0.0
-		cmd_twist.angular.z=0.0
 	else:
 		cmd_twist.linear.x=max(min(data.linear.x+delta*laser_twist.linear.x,1.0),-1.0)
 		cmd_twist.linear.y=max(min(data.linear.y+delta*laser_twist.linear.y,1.0),-1.0)
@@ -36,7 +35,7 @@ def get_joy(data):
 		#	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
 		#else:
 		print("out of while")"""
-		cmd_twist.angular.z=data.angular.z
+	cmd_twist.angular.z=data.angular.z
 
 	cmd_twist.linear.z=0.0
 	cmd_twist.angular.x=0.0
@@ -70,8 +69,8 @@ def get_lasers(data):
 			# the x value of the current repulsive vector is d*cos(angle)
 			# since we want the 1/d*d * OA 
 			# we add d*cos(angle)/d*d = cos(angle)/d
-			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i])
-			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i])
+			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i]*data.ranges[i])
+			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i]*data.ranges[i])
 
 			#tw.angular.z= tw.angular.z-angle/(data.ranges[i])
 			print("- Obstacle:")
