@@ -301,6 +301,12 @@ lib:FILEPATH=/opt/ros/indigo/lib/libxmlrpcpp.so
 message_runtime_DIR:PATH=/opt/ros/indigo/share/message_runtime/cmake
 
 //Value Computed by CMake
+pepper_navigation_BINARY_DIR:STATIC=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/pepper_navigation
+
+//Value Computed by CMake
+pepper_navigation_SOURCE_DIR:STATIC=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/src/pepper_navigation
+
+//Value Computed by CMake
 pepper_project_rob_BINARY_DIR:STATIC=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/build/pepper_project_rob
 
 //Value Computed by CMake
