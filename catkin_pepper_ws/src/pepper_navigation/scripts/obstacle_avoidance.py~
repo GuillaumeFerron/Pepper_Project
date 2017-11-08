@@ -17,14 +17,14 @@ def get_joy(data):
 	global vel
 	global cmd_twist
 	
-	delta = 0.1 #minimize repulsion vector
+	delta = 0.2 #minimize repulsion vector
 	if(data.linear.x==0.0 and data.linear.y==0.0 and data.angular.z==0.0):
 		cmd_twist.linear.x=0.0
 		cmd_twist.linear.y=0.0
 		cmd_twist.angular.z=0.0
 	else:
 		cmd_twist.linear.x=max(min(data.linear.x+delta*laser_twist.linear.x,1.0),-1.0)
-		cmd_twist.linear.y=max(min(data.linear.y+delta*laser_twist.linear.y,1.0),-1.0)
+		cmd_twist.linear.y=max(min(data.linear.y+delta *laser_twist.linear.y,1.0),-1.0)
 		"""i =1
 		#check if V' is opposite on x and y to V:
 		while(cmd_twist.linear.x * data.linear.x + cmd_twist.linear.y*data.linear.y <= 0):
