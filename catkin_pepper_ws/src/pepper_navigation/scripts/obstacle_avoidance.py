@@ -22,10 +22,10 @@ def get_joy(data):
 	else:
 		cmd_twist.linear.x=max(min(data.linear.x+laser_twist.linear.x,1.0),-1.0)
 		cmd_twist.linear.y=max(min(data.linear.y+laser_twist.linear.y,1.0),-1.0)
-		if data.angular.z==0.0:
-			cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
-		else:
-			cmd_twist.angular.z=data.angular.z
+		#if data.angular.z==0.0:
+		#	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
+		#else:
+		cmd_twist.angular.z=data.angular.z
 
 	cmd_twist.linear.z=0.0
 	cmd_twist.angular.x=0.0
