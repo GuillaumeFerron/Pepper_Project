@@ -49,6 +49,9 @@ def get_lasers(data):
 			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i]*data.ranges[i])
 			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i]*data.ranges[i])
 			tw.angular.z=tw.angular.z-angle/(data.ranges[i]*data.ranges[i])
+			if data.ranges[i]<1.0:
+				print("- Obstacle:")
+				print(angle)
 	tw.linear.x=tw.linear.x/45
 	tw.linear.y=tw.linear.y/45
 	tw.angular.z=tw.angular.z/45
@@ -58,10 +61,10 @@ def get_lasers(data):
 def obstacle_avoidance():
 	# Publish the 'cmd_vel' topic using Twist messages
 	global vel	
-	vel = rospy.Publisher('supprimer_cmd_vel', Twist, queue_size = 10)
+	vel = rospy.Publisher('cmd_vel', Twist, queue_size = 10)
 	# Listen to the lasers and joy
 	lasers = rospy.Subscriber("/pepper_robot/laser", LaserScan, get_lasers)
-	joy_cmd = rospy.Subscriber("cmd_vel", Twist, get_joy) #joy_twist
+	joy_cmd = rospy.Subscriber("joy_twist", Twist, get_joy) #joy_twist
 
 	# Node name
 	rospy.init_node('pepper_master')
