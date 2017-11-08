@@ -18,10 +18,9 @@ def get_joy(data):
 	global cmd_twist
 	
 	delta = 0.3 #minimize repulsion vector
-	if(data.linear.x==0.0 and data.linear.y==0.0 and data.angular.z==0.0):
+	if(data.linear.x==0.0 and data.linear.y==0.0 ):
 		cmd_twist.linear.x=0.0
 		cmd_twist.linear.y=0.0
-		cmd_twist.angular.z=0.0
 	else:
 		cmd_twist.linear.x=max(min(data.linear.x+delta*laser_twist.linear.x,1.0),-1.0)
 		cmd_twist.linear.y=max(min(data.linear.y+delta*laser_twist.linear.y,1.0),-1.0)
@@ -36,7 +35,7 @@ def get_joy(data):
 		#	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
 		#else:
 		print("out of while")"""
-		cmd_twist.angular.z=data.angular.z
+	cmd_twist.angular.z=data.angular.z
 
 	cmd_twist.linear.z=0.0
 	cmd_twist.angular.x=0.0
@@ -64,7 +63,7 @@ def get_lasers(data):
 	nbobstacles=0.0
 	for i in range(61):#61 points on laser 3*15 + 2*8 points on dead angles 
 		angle=data.angle_min+i*data.angle_increment
-		if(data.ranges[i]>0.0 and data.ranges[i]<1.0):
+		if(data.ranges[i]>0.0 and data.ranges[i]<1):
 			nbobstacles=nbobstacles+1.0
 			# - for repulsive vector 
 			# the x value of the current repulsive vector is d*cos(angle)
@@ -81,7 +80,7 @@ def get_lasers(data):
 		tw.linear.y=tw.linear.y/(nbobstacles)
 		#tw.angular.z=tw.angular.z/(nbobstacles)
 	global laser_twist
-	laser_twist = tw
+	laser_twist = tw 
 	print("lt : ", tw.linear.x, tw.linear.y)
 	
 

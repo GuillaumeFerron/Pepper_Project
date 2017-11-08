@@ -63,12 +63,12 @@ def get_lasers(data):
 	nbobstacles=0.0
 	for i in range(61):#61 points on laser 3*15 + 2*8 points on dead angles 
 		angle=data.angle_min+i*data.angle_increment
-		if(data.ranges[i]>0.0 and data.ranges[i]<1.0):
+		if(data.ranges[i]>0.0 and data.ranges[i]<1):
 			nbobstacles=nbobstacles+1.0
 			# - for repulsive vector 
 			# the x value of the current repulsive vector is d*cos(angle)
-			# since we want the 1/d*d * OA 
-			# we add d*cos(angle)/d*d = cos(angle)/d
+			# since we want the 1/d*d*d * OA 
+			# we add d*cos(angle)/d*d*d = cos(angle)/d*d
 			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i]*data.ranges[i])
 			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i]*data.ranges[i])
 
@@ -80,7 +80,7 @@ def get_lasers(data):
 		tw.linear.y=tw.linear.y/(nbobstacles)
 		#tw.angular.z=tw.angular.z/(nbobstacles)
 	global laser_twist
-	laser_twist = tw
+	laser_twist = tw 
 	print("lt : ", tw.linear.x, tw.linear.y)
 	
 
