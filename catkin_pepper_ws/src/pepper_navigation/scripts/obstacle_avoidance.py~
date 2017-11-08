@@ -67,8 +67,13 @@ def get_lasers(data):
 			nbobstacles=nbobstacles+1.0
 			# - for repulsive vector 
 			# the x value of the current repulsive vector is d*cos(angle)
+<<<<<<< HEAD
 			# since we want the 1/d*d*d * OA 
 			# we add d*cos(angle)/d*d*d = cos(angle)/d*d
+=======
+			# since we want the 1/d*d * OA 
+			# we add d*cos(angle)/d*d = cos(angle)/d
+>>>>>>> 49f433ff11da09822e44264c8bae0b2ed4084534
 			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i]*data.ranges[i])
 			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i]*data.ranges[i])
 
@@ -110,4 +115,7 @@ def obstacle_avoidance():
 if __name__ == '__main__':
 	obstacle_avoidance()
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 49f433ff11da09822e44264c8bae0b2ed4084534

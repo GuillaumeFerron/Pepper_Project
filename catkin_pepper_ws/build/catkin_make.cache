@@ -1,2 +1,2 @@
-pepper-ros-teleop:pepper_project_rob
+pepper-ros-teleop:pepper_navigation
 -DCATKIN_DEVEL_PREFIX=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/devel -DCMAKE_INSTALL_PREFIX=/home/invite/Documents/Pepper_Project/catkin_pepper_ws/install -G Unix Makefiles
