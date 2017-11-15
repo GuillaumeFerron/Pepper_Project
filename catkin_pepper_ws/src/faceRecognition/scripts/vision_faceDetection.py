@@ -25,7 +25,7 @@ class HumanGreeter(object):
         self.memory = session.service("ALMemory")
         # Connect the event callback.
         self.subscriber = self.memory.subscriber("FaceDetected")
-        #self.subscriber.signal.connect(self.on_human_tracked)
+        self.subscriber.signal.connect(self.on_human_tracked)
 	self.detected_subscriber = self.memory.subscriber("PeoplePerception/PeopleDetected")
 	self.detected_subscriber.signal.connect(self.on_human_detected)
         # Get the services ALTextToSpeech and ALFaceDetection.
@@ -50,11 +50,17 @@ class HumanGreeter(object):
             print "TimeStamp is: " + str(timeStamp[0])
 
             # Second Field = array of face_Info's.
-            personData = value[1][0]
-	    person_id = personData[0]
-	    person_dist = personData[1]
-            print "Person id :  %d - person_dist %.3f" % (person_id, person_dist)
-	    print(self.memory.getDataList("PeoplePerception/Person/"+str(person_id)))
+            personDataList = value[1]
+	    for j in range( len(personDataList) ):
+		personData = personDataList[j]
+
+	    	person_id = personData[0]
+	    	person_dist = personData[1]
+		self.tts.say("tu es "+str(person_id))
+           	print "Person id :  %d - person_dist %.3f" % (person_id, person_dist)
+		person_shirt = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/ShirtColor")
+		person_face = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/IsFaceDetected")
+		print("shirt color : ", person_shirt, " face : ", str(person_face))
            
 
     def on_human_tracked(self, value):
