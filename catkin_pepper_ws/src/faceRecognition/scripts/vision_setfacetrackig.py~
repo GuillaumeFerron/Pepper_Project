@@ -24,7 +24,7 @@ def main(session):
     print "Will set tracking to '%s' on the robot ..." % tracking_enabled
 
     # Enable or disable tracking.
-    face_service.setTrackingEnabled(tracking_enabled)
+    face_service.enableTracking(tracking_enabled)
 
     # Just to make sure correct option is set.
     print "Is tracking now enabled on the robot?", face_service.isTrackingEnabled()
