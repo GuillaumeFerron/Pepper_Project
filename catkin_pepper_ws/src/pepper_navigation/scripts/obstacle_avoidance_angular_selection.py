@@ -21,12 +21,12 @@ def get_joy(data):
 	
     joy_twist = data
 	
-    delta = 0.3  # minimize repulsion vector
+    delta = 0.2  # minimize repulsion vector
     if data.linear.x == 0.0 and data.linear.y == 0.0:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
-        snorme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
+        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
         norme_laser=min(1,norme_laser)
         
         cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_laser
@@ -68,7 +68,7 @@ def get_lasers(data):
     tw.angular.z = 0.0
     nbobstacles = 0.0
     
-	global joy_twist
+    global joy_twist
     # Calcul de l'angle du joy
     if joy_twist.linear.x == 0.0:
         angle_joy = 0.0
