@@ -26,7 +26,7 @@ def get_joy(data):
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
-        snorme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
+        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
         norme_laser=min(1,norme_laser)
         
         cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_laser
