@@ -17,7 +17,7 @@ def get_joy(data):
     global vel
     global cmd_twist
 
-    delta = 0.7  # minimize repulsion vector
+    delta = 0.2  # minimize repulsion vector
     if data.linear.x == 0.0 and data.linear.y == 0.0:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
