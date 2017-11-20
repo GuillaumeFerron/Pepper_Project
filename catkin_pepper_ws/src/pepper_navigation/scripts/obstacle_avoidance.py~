@@ -53,6 +53,7 @@ def get_joy(data):
 
 
 def get_lasers(data):
+	print(data.angle_increment)
 	global tw	
 	tw.linear.x=0.0
 	tw.linear.y=0.0

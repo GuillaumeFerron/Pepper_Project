@@ -70,8 +70,8 @@ def get_lasers(data):
 			# the x value of the current repulsive vector is d*cos(angle)
 			# since we want the 1/d*d*d * OA 
 			# we add d*cos(angle)/d*d*d = cos(angle)/d*d
-			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i]*data.ranges[i])
-			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i]*data.ranges[i])
+			tw.linear.x=tw.linear.x-cos(angle)/(data.ranges[i])
+			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i])
 
 			#tw.angular.z= tw.angular.z-angle/(data.ranges[i])
 			print("- Obstacle:")
