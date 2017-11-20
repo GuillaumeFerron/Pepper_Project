@@ -46,14 +46,16 @@ def get_joy(data):
 	print("")
 	print("JOY:")
 	print(data)
+	print("")
 	print("LASERS:")
 	print(laser_twist)
+	print("")
 	print("COMMANDE:")
 	print(cmd_twist)
 
 
 def get_lasers(data):
-	print(data.angle_increment)
+	
 	global tw	
 	tw.linear.x=0.0
 	tw.linear.y=0.0
@@ -74,15 +76,15 @@ def get_lasers(data):
 			tw.linear.y=tw.linear.y-sin(angle)/(data.ranges[i])
 
 			#tw.angular.z= tw.angular.z-angle/(data.ranges[i])
-			print("- Obstacle:")
-			print(angle, tw.linear.x, tw.linear.y)
+			#print("- Obstacle:")
+			#print(angle, tw.linear.x, tw.linear.y)
 	if nbobstacles != 0: #normalization
 		tw.linear.x=tw.linear.x/(nbobstacles)
 		tw.linear.y=tw.linear.y/(nbobstacles)
 		#tw.angular.z=tw.angular.z/(nbobstacles)
 	global laser_twist
 	laser_twist = tw 
-	print("lt : ", tw.linear.x, tw.linear.y)
+	#print("lt : ", tw.linear.x, tw.linear.y)
 	
 
 def obstacle_avoidance():
