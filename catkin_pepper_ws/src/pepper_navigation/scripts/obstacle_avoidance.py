@@ -53,6 +53,7 @@ def get_joy(data):
 
 
 def get_lasers(data):
+	print(data.angle_increment)
 	global tw	
 	tw.linear.x=0.0
 	tw.linear.y=0.0
@@ -63,7 +64,7 @@ def get_lasers(data):
 	nbobstacles=0.0
 	for i in range(61):#61 points on laser 3*15 + 2*8 points on dead angles 
 		angle=data.angle_min+i*data.angle_increment
-		if(data.ranges[i]>0.0 and data.ranges[i]<1):
+		if(data.ranges[i]>0.0 and data.ranges[i]<1.0):
 			nbobstacles=nbobstacles+1.0
 			# - for repulsive vector 
 			# the x value of the current repulsive vector is d*cos(angle)
