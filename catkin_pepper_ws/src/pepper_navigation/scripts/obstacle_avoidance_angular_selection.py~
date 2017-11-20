@@ -67,7 +67,7 @@ def get_lasers(data):
     
     global joy_twist
     # Calcul de l'angle du joy
-    if joy_twist.linear.x == 0.0:
+    if data.linear.x == 0.0:
         angle_joy = 0.0
     else:
 		angle_joy = atan(joy_twist.linear.y/joy_twist.linear.x)
