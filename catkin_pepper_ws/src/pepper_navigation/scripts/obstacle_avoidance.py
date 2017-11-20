@@ -2,13 +2,22 @@
 
 import rospy  # Ros module for python
 from geometry_msgs.msg import Twist
-from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import LaserScan, Range
 from math import *
 import numpy
 
 vel = None
+
+""" Pepper metaparameters """
+DETECTION_DISTANCE = 2
+CRITICAL_DISTANCE = 0.5
+delta = 0.7  # minimize repulsion vector
+
+""" Twists declarations """
 laser_twist = Twist()
+sonar_twist = Twist()
 tw = Twist()
+tw_sonar = Twist()
 cmd_twist = Twist()
 
 
@@ -17,28 +26,16 @@ def get_joy(data):
     global vel
     global cmd_twist
 
-    delta = 0.7  # minimize repulsion vector
     if data.linear.x == 0.0 and data.linear.y == 0.0:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
-        
         norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
         norme_laser=min(1,norme_laser)
         
         cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_laser
         cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y/norme_laser
-        """i =1
-        #check if V' is opposite on x and y to V:
-        while(cmd_twist.linear.x * data.linear.x + cmd_twist.linear.y*data.linear.y <= 0):
-            print("in while")
-            cmd_twist.linear.x=max(min(data.linear.x+pow(delta,i)*laser_twist.linear.x,1.0),-1.0)
-            cmd_twist.linear.y=max(min(data.linear.y+pow(delta,i)*laser_twist.linear.y,1.0),-1.0)
-            i=+1
-        #if data.angular.z==0.0:
-        #	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
-        #else:
-        print("out of while")"""
+
     cmd_twist.angular.z = data.angular.z
 
     cmd_twist.linear.z = 0.0
@@ -76,16 +73,34 @@ def get_lasers(data):
             tw.linear.y = tw.linear.y - sin(angle) / (data.ranges[i] * data.ranges[i])
 
             # tw.angular.z= tw.angular.z-angle/(data.ranges[i])
-            print("- Obstacle:")
-            print(angle, tw.linear.x, tw.linear.y)
+            # print("- Obstacle:")
+            # print(angle, tw.linear.x, tw.linear.y)
     if nbobstacles != 0:  # normalization
         tw.linear.x = tw.linear.x / nbobstacles
         tw.linear.y = tw.linear.y / nbobstacles
     # tw.angular.z=tw.angular.z/(nbobstacles)
     global laser_twist
     laser_twist = tw
-    print("lt : ", tw.linear.x, tw.linear.y)
+    # print("lt : ", tw.linear.x, tw.linear.y)
 
+
+def get_sonar(data):
+    obstacleDist = data.range
+    global tw_sonar
+    tw_sonar.linear.x = 0.0
+    tw_sonar.linear.y = 0.0
+    tw_sonar.linear.z = 0.0
+    tw_sonar.angular.x = 0.0
+    tw_sonar.angular.y = 0.0
+    tw_sonar.angular.z = 0.0
+
+    if CRITICAL_DISTANCE < obstacleDist < DETECTION_DISTANCE:
+        tw_sonar.linear.x = - 1 / (obstacleDist * obstacleDist)
+
+    # tw.angular.z=tw.angular.z/(nbobstacles)
+    global sonar_twist
+    sonar_twist = tw_sonar
+    
 
 def obstacle_avoidance():
     # Publish the 'cmd_vel' topic using Twist messages
