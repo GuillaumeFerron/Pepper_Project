@@ -10,24 +10,35 @@ vel = None
 laser_twist = Twist()
 tw = Twist()
 cmd_twist = Twist()
-
+norme_max = 0.0
 
 def get_joy(data):
     global laser_twist
     global vel
     global cmd_twist
-
-    delta = 0.2  # minimize repulsion vector
+	global norme_max #test1
+	
+    delta = 0.7  # minimize repulsion vector
     if data.linear.x == 0.0 and data.linear.y == 0.0:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
         
         norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
-        norme_laser=min(1,norme_laser)
+        norme_max=max(min(1,norme_laser),norme_max) 
         
-        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_laser
-        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y/norme_laser
+        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_max
+        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y/norme_max
+        
+#        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
+#        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
+        
+#        norme=sqrt((cmd_twist.linear.x*cmd_twist.linear.x+cmd_twist.linear.y*cmd_twist.linear.y)
+        
+#        cmd_twist.linear.x = cmd_twist.linear.x/norme
+#        cmd_twist.linear.y = cmd_twist.linear.y/norme 
+        
+        
         """i =1
         #check if V' is opposite on x and y to V:
         while(cmd_twist.linear.x * data.linear.x + cmd_twist.linear.y*data.linear.y <= 0):
