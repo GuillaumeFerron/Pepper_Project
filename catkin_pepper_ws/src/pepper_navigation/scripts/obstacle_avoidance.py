@@ -40,7 +40,7 @@ def get_joy(data):
 #        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
 #        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
         
-#        norme=sqrt((cmd_twist.linear.x*cmd_twist.linear.x+cmd_twist.linear.y*cmd_twist.linear.y)
+#        norme=min(1,sqrt((cmd_twist.linear.x*cmd_twist.linear.x+cmd_twist.linear.y*cmd_twist.linear.y))
         
 #        cmd_twist.linear.x = cmd_twist.linear.x/norme
 #        cmd_twist.linear.y = cmd_twist.linear.y/norme 
