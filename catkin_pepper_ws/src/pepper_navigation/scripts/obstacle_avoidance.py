@@ -15,9 +15,7 @@ delta = 0.7  # minimize repulsion vector
 
 """ Twists declarations """
 laser_twist = Twist()
-sonar_twist = Twist()
 tw = Twist()
-tw_sonar = Twist()
 cmd_twist = Twist()
 
 
@@ -26,7 +24,7 @@ def get_joy(data):
     global vel
     global cmd_twist
 
-    if data.linear.x == 0.0 and data.linear.y == 0.0:
+    if (data.linear.x == 0.0 and data.linear.y == 0.0) or EMERGENCY_STOP:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
@@ -85,21 +83,13 @@ def get_lasers(data):
 
 
 def get_sonar(data):
+    global EMERGENCY_STOP = false
     obstacleDist = data.range
-    global tw_sonar
-    tw_sonar.linear.x = 0.0
-    tw_sonar.linear.y = 0.0
-    tw_sonar.linear.z = 0.0
-    tw_sonar.angular.x = 0.0
-    tw_sonar.angular.y = 0.0
-    tw_sonar.angular.z = 0.0
-
-    if CRITICAL_DISTANCE < obstacleDist < DETECTION_DISTANCE:
-        tw_sonar.linear.x = - 1 / (obstacleDist * obstacleDist)
-
-    # tw.angular.z=tw.angular.z/(nbobstacles)
-    global sonar_twist
-    sonar_twist = tw_sonar
+    
+    if obstacleDist < CRITICAL_DISTANCE:
+        EMERGENCY_STOP = true
+    else
+        EMERGENCY_STOP = false
     
 
 def obstacle_avoidance():
@@ -110,18 +100,6 @@ def obstacle_avoidance():
     # Listen to the lasers and joy
     lasers = rospy.Subscriber("/pepper_robot/laser", LaserScan, get_lasers)
     joy_cmd = rospy.Subscriber("joy_twist", Twist, get_joy)  # joy_twist
-
-    # Node name
-
-    #	rate = rospy.Rate(10) # 10hz
-    #	cmd = Twist()
-    #	cmd.linear.x = 1.0 # joystick comand
-    #	calc = Twist()
-    #	while not rospy.is_shutdown():
-    #
-    #		# publish the comands on the topic
-    #		vel.publish(cmd)
-    #		rate.sleep()
 
     rospy.spin()
 
