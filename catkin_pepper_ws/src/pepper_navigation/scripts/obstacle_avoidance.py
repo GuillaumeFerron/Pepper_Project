@@ -39,7 +39,11 @@ def get_joy(data):
 
     elif (data.linear.x > 0 and EMERGENCY_STOP_FRONT == 1) or (data.linear.x < 0 and EMERGENCY_STOP_BACK == 1):
         cmd_twist.linear.x = 0.0
-        cmd_twist.angular.z = delta_Z
+        cmd_twist.linear.y = 0.0
+        if laser_twist.linear.y <= 0:
+            cmd_twist.angular.z = -delta_Z
+        else:
+            cmd_twist.angular.z = delta_Z
 
     else:
         norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
