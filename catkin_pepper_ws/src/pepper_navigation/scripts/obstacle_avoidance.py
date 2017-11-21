@@ -42,27 +42,11 @@ def get_joy(data):
         
         cmd_twist.linear.x = data.linear.x + delta * laser_twist.linear.x/norme_max
         cmd_twist.linear.y = data.linear.y + delta * laser_twist.linear.y/norme_max
-        
-#        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
-#        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
-        
+
 #        norme=max(1,sqrt(cmd_twist.linear.x * cmd_twist.linear.x + cmd_twist.linear.y * cmd_twist.linear.y))
         
 #        cmd_twist.linear.x = cmd_twist.linear.x / norme
 #        cmd_twist.linear.y = cmd_twist.linear.y / norme
-        
-        
-        """i =1
-        #check if V' is opposite on x and y to V:
-        while(cmd_twist.linear.x * data.linear.x + cmd_twist.linear.y*data.linear.y <= 0):
-            print("in while")
-            cmd_twist.linear.x=max(min(data.linear.x+pow(delta,i)*laser_twist.linear.x,1.0),-1.0)
-            cmd_twist.linear.y=max(min(data.linear.y+pow(delta,i)*laser_twist.linear.y,1.0),-1.0)
-            i=+1
-        #if data.angular.z==0.0:
-        #	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
-        #else:
-        print("out of while")"""
 
     cmd_twist.angular.z = data.angular.z
 
