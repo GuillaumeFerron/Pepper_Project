@@ -17,6 +17,7 @@ EMERGENCY_STOP_BACK = 0
 
 """ Twists declarations """
 laser_twist = Twist()
+joy_twist = Twist()
 tw = Twist()
 cmd_twist = Twist()
 norme_max = 1.0
@@ -49,15 +50,15 @@ def get_joy(data):
 #        cmd_twist.linear.x = cmd_twist.linear.x / norme
 #        cmd_twist.linear.y = cmd_twist.linear.y / norme
 
-		prod_scal=cmd_twist.linear.x*data.linear.x+cmd_twist.linear.y*data.linear.y
-		if prod_scal<0:
-			prod_scal=-cmd_twist.linear.x*data.linear.y+cmd_twist.linear.y*data.linear.x
-			if prod_scal<0:
-				cmd_twist.linear.x=data.linear.y
-				cmd_twist.linear.y=-data.linear.x
-			else:
-				cmd_twist.linear.x=-data.linear.y
-				cmd_twist.linear.y=data.linear.x
+    prod_scal=cmd_twist.linear.x*data.linear.x+cmd_twist.linear.y*data.linear.y
+    if prod_scal<0:
+        prod_scal=-cmd_twist.linear.x*data.linear.y+cmd_twist.linear.y*data.linear.x
+        if prod_scal<0:
+            cmd_twist.linear.x=data.linear.y
+            cmd_twist.linear.y=-data.linear.x
+        else:
+            cmd_twist.linear.x=-data.linear.y
+            cmd_twist.linear.y=data.linear.x
 				
     cmd_twist.angular.z = data.angular.z
 
@@ -89,7 +90,7 @@ def get_lasers(data):
     tw.angular.z = 0.0
     nbobstacles = 0.0
     
-	global joy_twist
+    global joy_twist
     # Calcul de l'angle du joy
     if joy_twist.linear.x == 0.0:
         angle_joy = 0.0
