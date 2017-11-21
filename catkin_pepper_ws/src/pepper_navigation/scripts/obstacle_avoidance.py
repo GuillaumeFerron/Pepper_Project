@@ -11,7 +11,7 @@ vel = None
 """ Pepper metaparameters """
 DETECTION_DISTANCE = 2
 CRITICAL_DISTANCE = 0.5
-delta = 0.7  # minimize repulsion vector
+delta = 0.3  # minimize repulsion vector
 EMERGENCY_STOP_FRONT = 0
 EMERGENCY_STOP_BACK = 0
 
@@ -19,7 +19,7 @@ EMERGENCY_STOP_BACK = 0
 laser_twist = Twist()
 tw = Twist()
 cmd_twist = Twist()
-norme_max = 0.0
+norme_max = 1.0
 
 def get_joy(data):
     global laser_twist
@@ -29,24 +29,27 @@ def get_joy(data):
     global delta
     global EMERGENCY_STOP_FRONT
     global EMERGENCY_STOP_BACK
-    if (data.linear.x == 0.0 and data.linear.y == 0.0) or (data.linear.x > 0 and EMERGENCY_STOP_FRONT == 1) or (data.linear.x < 0 and EMERGENCY_STOP_BACK == 1):
+    if (data.linear.x == 0.0 and data.linear.y == 0.0):
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
-        print("stop")
+    
+    elif (data.linear.x > 0 and EMERGENCY_STOP_FRONT == 1) or (data.linear.x < 0 and EMERGENCY_STOP_BACK == 1):
+        cmd_twist.linear.x = 0.0
+
     else:
-#        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
-#        norme_max=max(min(1,norme_laser),norme_max) 
+        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
+        norme_max=max(min(1,norme_laser),norme_max) 
         
-#        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_max
-#        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y/norme_max
+        cmd_twist.linear.x = data.linear.x + delta * laser_twist.linear.x/norme_max
+        cmd_twist.linear.y = data.linear.y + delta * laser_twist.linear.y/norme_max
         
-        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
-        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
+#        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
+#        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
         
-        norme=sqrt(cmd_twist.linear.x * cmd_twist.linear.x + cmd_twist.linear.y * cmd_twist.linear.y)
+#        norme=max(1,sqrt(cmd_twist.linear.x * cmd_twist.linear.x + cmd_twist.linear.y * cmd_twist.linear.y))
         
-        cmd_twist.linear.x = cmd_twist.linear.x / norme
-        cmd_twist.linear.y = cmd_twist.linear.y / norme
+#        cmd_twist.linear.x = cmd_twist.linear.x / norme
+#        cmd_twist.linear.y = cmd_twist.linear.y / norme
         
         
         """i =1
@@ -92,7 +95,7 @@ def get_lasers(data):
     nbobstacles = 0.0
     for i in range(61):  # 61 points on laser 3*15 + 2*8 points on dead angles
         angle = data.angle_min + i * data.angle_increment
-        if 0.0 < data.ranges[i] < 3.0:
+        if 0.0 < data.ranges[i] < DETECTION_DISTANCE:
             nbobstacles = nbobstacles + 1.0
             # - for repulsive vector
             # the x value of the current repulsive vector is d*cos(angle)
