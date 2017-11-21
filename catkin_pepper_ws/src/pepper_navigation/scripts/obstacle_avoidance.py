@@ -12,6 +12,7 @@ vel = None
 DETECTION_DISTANCE = 2
 CRITICAL_DISTANCE = 0.5
 delta = 0.7  # minimize repulsion vector
+EMERGENCY_STOP = 0
 
 """ Twists declarations """
 laser_twist = Twist()
@@ -23,9 +24,10 @@ def get_joy(data):
     global laser_twist
     global vel
     global cmd_twist
-	global norme_max #test1
-	global delta
-    if (data.linear.x == 0.0 and data.linear.y == 0.0) or EMERGENCY_STOP:
+    global norme_max #test1
+    global delta
+    global EMERGENCY_STOP
+    if (data.linear.x == 0.0 and data.linear.y == 0.0) or EMERGENCY_STOP == 1:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
@@ -105,13 +107,14 @@ def get_lasers(data):
 
 
 def get_sonar(data):
-    global EMERGENCY_STOP = false
+    global EMERGENCY_STOP
+    EMERGENCY_STOP = 0
     obstacleDist = data.range
     
     if obstacleDist < CRITICAL_DISTANCE:
-        EMERGENCY_STOP = true
-    else
-        EMERGENCY_STOP = false
+        EMERGENCY_STOP = 1
+    else:
+        EMERGENCY_STOP = 0
     
 
 def obstacle_avoidance():
