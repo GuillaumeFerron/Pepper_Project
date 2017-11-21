@@ -49,6 +49,16 @@ def get_joy(data):
 #        cmd_twist.linear.x = cmd_twist.linear.x / norme
 #        cmd_twist.linear.y = cmd_twist.linear.y / norme
 
+		prod_scal=cmd_twist.linear.x*data.linear.x+cmd_twist.linear.y*data.linear.y
+		if prod_scal<0:
+			prod_scal=-cmd_twist.linear.x*data.linear.y+cmd_twist.linear.y*data.linear.x
+			if prod_scal<0:
+				cmd_twist.linear.x=data.linear.y
+				cmd_twist.linear.y=-data.linear.x
+			else:
+				cmd_twist.linear.x=-data.linear.y
+				cmd_twist.linear.y=data.linear.x
+				
     cmd_twist.angular.z = data.angular.z
 
     cmd_twist.linear.z = 0.0
