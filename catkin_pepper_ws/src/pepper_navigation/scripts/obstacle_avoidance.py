@@ -94,16 +94,29 @@ def get_lasers(data):
     tw.angular.y = 0.0
     tw.angular.z = 0.0
     nbobstacles = 0.0
+    
+	global joy_twist
+    # Calcul de l'angle du joy
+    if joy_twist.linear.x == 0.0:
+        angle_joy = 0.0
+    else:
+		angle_joy = atan(joy_twist.linear.y/joy_twist.linear.x)
+    
+    
+    
     for i in range(61):  # 61 points on laser 3*15 + 2*8 points on dead angles
         angle = data.angle_min + i * data.angle_increment
+        coeff_angle=0.5
+        if angle_joy-1.0 < angle < angle_joy+1.0:
+			coeff_angle=1.5
         if 0.0 < data.ranges[i] < DETECTION_DISTANCE:
             nbobstacles = nbobstacles + 1.0
             # - for repulsive vector
             # the x value of the current repulsive vector is d*cos(angle)
             # since we want the 1/d*d*d * OA
             # we add d*cos(angle)/d*d*d = cos(angle)/d*d
-            tw.linear.x = tw.linear.x - cos(angle) / (data.ranges[i] * data.ranges[i])
-            tw.linear.y = tw.linear.y - sin(angle) / (data.ranges[i] * data.ranges[i])
+            tw.linear.x = tw.linear.x - coeff_angle * cos(angle) / (data.ranges[i] * data.ranges[i])
+            tw.linear.y = tw.linear.y - coeff_angle * sin(angle) / (data.ranges[i] * data.ranges[i])
 
             # tw.angular.z= tw.angular.z-angle/(data.ranges[i])
             # print("- Obstacle:")
