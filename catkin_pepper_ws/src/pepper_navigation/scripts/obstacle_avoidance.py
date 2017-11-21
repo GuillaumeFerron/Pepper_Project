@@ -12,7 +12,8 @@ vel = None
 DETECTION_DISTANCE = 2
 CRITICAL_DISTANCE = 0.5
 delta = 0.7  # minimize repulsion vector
-EMERGENCY_STOP = 0
+EMERGENCY_STOP_FRONT = 0
+EMERGENCY_STOP_BACK = 0
 
 """ Twists declarations """
 laser_twist = Twist()
@@ -26,24 +27,26 @@ def get_joy(data):
     global cmd_twist
     global norme_max #test1
     global delta
-    global EMERGENCY_STOP
-    if (data.linear.x == 0.0 and data.linear.y == 0.0) or EMERGENCY_STOP == 1:
+    global EMERGENCY_STOP_FRONT
+    global EMERGENCY_STOP_BACK
+    if (data.linear.x == 0.0 and data.linear.y == 0.0) or (data.linear.x > 0 and EMERGENCY_STOP_FRONT == 1) or (data.linear.x < 0 and EMERGENCY_STOP_BACK == 1):
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
+        print("stop")
     else:
-        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
-        norme_max=max(min(1,norme_laser),norme_max) 
+#        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
+#        norme_max=max(min(1,norme_laser),norme_max) 
         
-        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_max
-        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y/norme_max
+#        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.x/norme_max
+#        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y/norme_max
         
-#        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
-#        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
+        cmd_twist.linear.x = data.linear.x/2.0 + delta * laser_twist.linear.y
+        cmd_twist.linear.y = data.linear.y/2.0 + delta * laser_twist.linear.y
         
-#        norme=sqrt((cmd_twist.linear.x*cmd_twist.linear.x+cmd_twist.linear.y*cmd_twist.linear.y)
+        norme=sqrt(cmd_twist.linear.x * cmd_twist.linear.x + cmd_twist.linear.y * cmd_twist.linear.y)
         
-#        cmd_twist.linear.x = cmd_twist.linear.x/norme
-#        cmd_twist.linear.y = cmd_twist.linear.y/norme 
+        cmd_twist.linear.x = cmd_twist.linear.x / norme
+        cmd_twist.linear.y = cmd_twist.linear.y / norme
         
         
         """i =1
@@ -72,6 +75,10 @@ def get_joy(data):
     print(laser_twist)
     print("COMMANDE:")
     print(cmd_twist)
+    print("EMERGENCY_STOP_FRONT:")
+    print(EMERGENCY_STOP_FRONT)
+    print("EMERGENCY_STOP_BACK:")
+    print(EMERGENCY_STOP_BACK)    
 
 
 def get_lasers(data):
@@ -106,15 +113,25 @@ def get_lasers(data):
     # print("lt : ", tw.linear.x, tw.linear.y)
 
 
-def get_sonar(data):
-    global EMERGENCY_STOP
-    EMERGENCY_STOP = 0
+def get_sonar_front(data):
+    global EMERGENCY_STOP_FRONT
+    EMERGENCY_STOP_FRONT = 0
     obstacleDist = data.range
     
     if obstacleDist < CRITICAL_DISTANCE:
-        EMERGENCY_STOP = 1
+        EMERGENCY_STOP_FRONT = 1
     else:
-        EMERGENCY_STOP = 0
+        EMERGENCY_STOP_FRONT = 0
+
+def get_sonar_back(data):
+    global EMERGENCY_STOP_BACK
+    EMERGENCY_STOP_BACK = 0
+    obstacleDist = data.range
+    
+    if obstacleDist < CRITICAL_DISTANCE:
+        EMERGENCY_STOP_BACK = 1
+    else:
+        EMERGENCY_STOP_BACK = 0
     
 
 def obstacle_avoidance():
@@ -124,6 +141,8 @@ def obstacle_avoidance():
     vel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     # Listen to the lasers and joy
     lasers = rospy.Subscriber("/pepper_robot/laser", LaserScan, get_lasers)
+    sonar_front = rospy.Subscriber("/pepper_robot/sonar/front", Range, get_sonar_front)
+    sonar_back = rospy.Subscriber("/pepper_robot/sonar/back", Range, get_sonar_back)
     joy_cmd = rospy.Subscriber("joy_twist", Twist, get_joy)  # joy_twist
 
     rospy.spin()
