@@ -2,11 +2,18 @@
 
 import rospy  # Ros module for python
 from geometry_msgs.msg import Twist
-from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import LaserScan, Range
 from math import *
 import numpy
 
 vel = None
+
+""" Pepper metaparameters """
+DETECTION_DISTANCE = 2
+CRITICAL_DISTANCE = 0.5
+delta = 0.7  # minimize repulsion vector
+
+""" Twists declarations """
 laser_twist = Twist()
 tw = Twist()
 cmd_twist = Twist()
@@ -17,13 +24,11 @@ def get_joy(data):
     global vel
     global cmd_twist
 	global norme_max #test1
-	
-    delta = 0.7  # minimize repulsion vector
-    if data.linear.x == 0.0 and data.linear.y == 0.0:
+	global delta
+    if (data.linear.x == 0.0 and data.linear.y == 0.0) or EMERGENCY_STOP:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
     else:
-        
         norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
         norme_max=max(min(1,norme_laser),norme_max) 
         
@@ -50,6 +55,7 @@ def get_joy(data):
         #	cmd_twist.angular.z=max(min(laser_twist.angular.z,1.0),-1.0)
         #else:
         print("out of while")"""
+
     cmd_twist.angular.z = data.angular.z
 
     cmd_twist.linear.z = 0.0
@@ -87,16 +93,26 @@ def get_lasers(data):
             tw.linear.y = tw.linear.y - sin(angle) / (data.ranges[i] * data.ranges[i])
 
             # tw.angular.z= tw.angular.z-angle/(data.ranges[i])
-            print("- Obstacle:")
-            print(angle, tw.linear.x, tw.linear.y)
+            # print("- Obstacle:")
+            # print(angle, tw.linear.x, tw.linear.y)
     if nbobstacles != 0:  # normalization
         tw.linear.x = tw.linear.x / nbobstacles
         tw.linear.y = tw.linear.y / nbobstacles
     # tw.angular.z=tw.angular.z/(nbobstacles)
     global laser_twist
     laser_twist = tw
-    print("lt : ", tw.linear.x, tw.linear.y)
+    # print("lt : ", tw.linear.x, tw.linear.y)
 
+
+def get_sonar(data):
+    global EMERGENCY_STOP = false
+    obstacleDist = data.range
+    
+    if obstacleDist < CRITICAL_DISTANCE:
+        EMERGENCY_STOP = true
+    else
+        EMERGENCY_STOP = false
+    
 
 def obstacle_avoidance():
     # Publish the 'cmd_vel' topic using Twist messages
@@ -106,18 +122,6 @@ def obstacle_avoidance():
     # Listen to the lasers and joy
     lasers = rospy.Subscriber("/pepper_robot/laser", LaserScan, get_lasers)
     joy_cmd = rospy.Subscriber("joy_twist", Twist, get_joy)  # joy_twist
-
-    # Node name
-
-    #	rate = rospy.Rate(10) # 10hz
-    #	cmd = Twist()
-    #	cmd.linear.x = 1.0 # joystick comand
-    #	calc = Twist()
-    #	while not rospy.is_shutdown():
-    #
-    #		# publish the comands on the topic
-    #		vel.publish(cmd)
-    #		rate.sleep()
 
     rospy.spin()
 
