@@ -18,7 +18,7 @@ vel=None
 DIST_MIN = 0.5
 ANGLE_MAX = 0.09
 X_VELOCITY = 0.5
-Z_ANGULAR_VELOCITY = 0.2
+Z_ANGULAR_VELOCITY = 0.3
 
 """ Twists declarations """
 cmd_twist = Twist()
@@ -86,7 +86,7 @@ class PersonDetection(object):
 				cmd_twist.angular.z = Z_ANGULAR_VELOCITY
 			if person_dist > DIST_MIN:
 				cmd_twist.linear.x =X_VELOCITY
-				vel.publish(cmd_twist)
+			vel.publish(cmd_twist)
 			cmd_twist.linear.x=0.0
 			cmd_twist.angular.z=0.0 
 	

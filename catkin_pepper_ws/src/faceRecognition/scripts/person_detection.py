@@ -85,8 +85,8 @@ class PersonDetection(object):
 			elif person_yaw > ANGLE_MAX :
 				cmd_twist.angular.z = Z_ANGULAR_VELOCITY
 			if person_dist > DIST_MIN:
-				cmd_twist.linear.x =X_VELOCITY
-				vel.publish(cmd_twist)
+				cmd_twist.linear.x = min(0.9,person_dist)
+			vel.publish(cmd_twist)
 			cmd_twist.linear.x=0.0
 			cmd_twist.angular.z=0.0 
 	
