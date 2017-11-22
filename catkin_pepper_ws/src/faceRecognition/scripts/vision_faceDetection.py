@@ -7,6 +7,24 @@ import qi
 import time
 import sys
 import argparse
+import rospy
+from geometry_msgs.msg import Twist
+from math import *
+
+
+vel=None
+check = 0
+IP = "nao.134.214.220.7"  # Replace here with your NaoQi's IP address.
+PORT = 9559
+
+""" Pepper metaparameters """
+DIST_MIN = 0.5
+ANGLE_MAX = 0.09
+X_VELOCITY = 0.8
+Z_ANGULAR_VELOCITY = 0.2
+
+""" Twists declarations """
+cmd_twist = Twist()
 
 
 class HumanGreeter(object):
@@ -19,6 +37,7 @@ class HumanGreeter(object):
         Initialisation of qi framework and event detection.
         """
         super(HumanGreeter, self).__init__()
+	
         app.start()
         session = app.session
         # Get the service ALMemory.
@@ -36,10 +55,13 @@ class HumanGreeter(object):
 	self.detected.subscribe("HumanGreeter")
         self.got_face = False
 	
+	
 
 
     def on_human_detected(self,value):
 	print("detected  human")
+	global cmd_twist
+	global vel
 	if value == []:  # empty value when the face disappears
             print("no people detected")
             #self.tts.say("je ne te vois plus")
@@ -64,6 +86,21 @@ class HumanGreeter(object):
 		person_shirt = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/ShirtColor")
 		person_face = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/IsFaceDetected")
 		print("shirt color : ", person_shirt, " face : ", str(person_face))
+		global vel
+		global cmd_twist
+		if abs(person_yaw) > ANGLE_MAX :
+			if person_yaw < 0 :
+				cmd_twist.angular.z = - Z_ANGULAR_VELOCITY
+			else :
+				cmd_twist.angular.z = Z_ANGULAR_VELOCITY
+				
+			vel.publish(cmd_twist)
+		if person_dist > DIST_MIN:
+			cmd_twist.linear.x =X_VELOCITY
+			vel.publish(cmd_twist)
+		cmd_twist.linear.x=0.0
+		cmd_twist.angular.z=0.0 
+		
            
 
     def on_human_tracked(self, value):
@@ -101,6 +138,8 @@ class HumanGreeter(object):
         Loop on, wait for events until manual interruption.
         """
         print "Starting HumanGreeter"
+
+    	
         try:
             while True:
                 time.sleep(1)
@@ -129,5 +168,7 @@ if __name__ == "__main__":
                "Please check your script arguments. Run with -h option for help.")
         sys.exit(1)
 
+    rospy.init_node('pepper_face_master')
+    vel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     human_greeter = HumanGreeter(app)
     human_greeter.run()
