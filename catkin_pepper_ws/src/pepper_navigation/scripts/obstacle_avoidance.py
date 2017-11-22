@@ -14,6 +14,7 @@ CRITICAL_DISTANCE = 0.5
 delta = 0.3  # minimize repulsion vector
 EMERGENCY_STOP_FRONT = 0
 EMERGENCY_STOP_BACK = 0
+EMERGENCY_STOP_ROTATE = 0
 delta_Z = 0.3
 
 """ Twists declarations """
@@ -32,6 +33,7 @@ def get_joy(data):
     global delta
     global EMERGENCY_STOP_FRONT
     global EMERGENCY_STOP_BACK
+    global EMERGENCY_STOP_ROTATE
     cmd_twist.angular.z = 0
 
     if data.linear.x == 0.0 and data.linear.y == 0.0:
@@ -41,12 +43,14 @@ def get_joy(data):
     elif (data.linear.x > 0 and EMERGENCY_STOP_FRONT == 1) or (data.linear.x < 0 and EMERGENCY_STOP_BACK == 1):
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
-        if laser_twist.linear.y <= 0:
-            cmd_twist.angular.z = -delta_Z
-        else:
-            cmd_twist.angular.z = delta_Z
+        if laser_twist.linear.y <= 0 and EMERGENCY_STOP_ROTATE == 0:
+            EMERGENCY_STOP_ROTATE = -1
+        elif laser_twist.linear.y > 0 and EMERGENCY_STOP_ROTATE == 0:
+            EMERGENCY_STOP_ROTATE = 1
+        cmd_twist.angular.z = EMERGENCY_STOP_ROTATE * delta_Z
 
     else:
+        EMERGENCY_STOP_ROTATE = 0
         norme_laser = sqrt(laser_twist.linear.x * laser_twist.linear.x + laser_twist.linear.y * laser_twist.linear.y)
         norme_max = max(min(1, norme_laser), norme_max)
 
