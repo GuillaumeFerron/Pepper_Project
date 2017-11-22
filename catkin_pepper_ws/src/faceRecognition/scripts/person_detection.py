@@ -18,7 +18,7 @@ vel=None
 DIST_MIN = 0.5
 ANGLE_MAX = 0.09
 X_VELOCITY = 0.5
-Z_ANGULAR_VELOCITY = 0.3
+Z_ANGULAR_VELOCITY = 0.1
 
 """ Twists declarations """
 cmd_twist = Twist()
@@ -40,6 +40,12 @@ class PersonDetection(object):
 		session = app.session
 		# Get the service ALMemory.
 		self.memory = session.service("ALMemory")
+		self.motion = session.service("ALMotion")
+
+		names = "Head"
+		stiffness = 0.0
+		self.motion.setStiffnesses(names,stiffness)
+
 		# Connect the event callback.
 		self.detected_subscriber = self.memory.subscriber("PeoplePerception/PeopleDetected")
 		self.detected_subscriber.signal.connect(self.on_human_detected)
@@ -65,30 +71,31 @@ class PersonDetection(object):
 
 		    # Second Field = array of face_Info's.
 		    personDataList = value[1]
-		    for j in range( len(personDataList) ):
-			personData = personDataList[j]
+		    #for j in range( len(personDataList) ):
+		    personData = personDataList[0]
 
-		    	person_id = personData[0]
-		    	person_dist = personData[1]
-			person_pitch = personData[2]
-			person_yaw = personData[3]
+		    person_id = personData[0]
+		    person_dist = personData[1]
+		    person_pitch = personData[2]
+		    person_yaw = personData[3]
 			#self.tts.say("tu es "+str(person_id))
-		   	print "Person id :  %d - person_dist %.3f " % (person_id, person_dist)
-			print "pitch" + str(person_pitch)+ "yaw" +str(person_yaw)
-			person_shirt = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/ShirtColor")
-			person_face = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/IsFaceDetected")
-			print("shirt color : ", person_shirt, " face : ", str(person_face))
-			global vel
-			global cmd_twist
-			if person_yaw < -ANGLE_MAX :
-				cmd_twist.angular.z = - Z_ANGULAR_VELOCITY
-			elif person_yaw > ANGLE_MAX :
-				cmd_twist.angular.z = Z_ANGULAR_VELOCITY
-			if person_dist > DIST_MIN:
-				cmd_twist.linear.x = min(0.9,person_dist)
-			vel.publish(cmd_twist)
-			cmd_twist.linear.x=0.0
-			cmd_twist.angular.z=0.0 
+		    print "Person id :  %d - person_dist %.3f " % (person_id, person_dist)
+		    print "pitch" + str(person_pitch)+ "yaw" +str(person_yaw)
+		    person_shirt = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/ShirtColor")
+		    person_face = self.memory.getData("PeoplePerception/Person/"+str(person_id)+"/IsFaceDetected")
+		    print("shirt color : ", person_shirt, " face : ", str(person_face))
+		    global vel
+		    global cmd_twist
+		    if person_yaw < -ANGLE_MAX :
+		 	cmd_twist.angular.z = - Z_ANGULAR_VELOCITY
+	            elif person_yaw > ANGLE_MAX :
+			cmd_twist.angular.z = Z_ANGULAR_VELOCITY
+		    if person_dist > DIST_MIN:
+			cmd_twist.linear.x = min(0.9,person_dist)
+		    vel.publish(cmd_twist)
+		    print '\n publish  xl:'+str(cmd_twist.linear.x)+' za:'+str(cmd_twist.angular.z)+'\n'
+		    cmd_twist.linear.x=0.0
+		    cmd_twist.angular.z=0.0 
 	
 
 	def run(self):
@@ -128,7 +135,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     rospy.init_node('pepper_face_master')
-    vel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    vel = rospy.Publisher('joy_twist', Twist, queue_size=10)
     person_detec =  PersonDetection(app)
     person_detec.run()
    
