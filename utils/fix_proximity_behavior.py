@@ -16,8 +16,8 @@ def main(session):
 
     motion_service = session.service("ALMotion")
 
-    motion_service.setOrthogonalSecurityDistance(0.15)
-    motion_service.setTangentialSecurityDistance(0.15)
+    motion_service.setOrthogonalSecurityDistance(0.1)
+    motion_service.setTangentialSecurityDistance(0.1)
     print("OrthogonalSecurity set to" + str(
         motion_service.getOrthogonalSecurityDistance()) + "," + "TangentialSecurity set to" + str(
         motion_service.getOrthogonalSecurityDistance()))
