@@ -23,17 +23,18 @@ tw = Twist()
 cmd_twist = Twist()
 norme_max = 1.0
 
+
 def get_joy(data):
     global laser_twist
     global vel
     global cmd_twist
-    global norme_max #test1
+    global norme_max  # test1
     global delta
     global EMERGENCY_STOP_FRONT
     global EMERGENCY_STOP_BACK
     cmd_twist.angular.z = 0
 
-    if (data.linear.x == 0.0 and data.linear.y == 0.0):
+    if data.linear.x == 0.0 and data.linear.y == 0.0:
         cmd_twist.linear.x = 0.0
         cmd_twist.linear.y = 0.0
 
@@ -46,28 +47,27 @@ def get_joy(data):
             cmd_twist.angular.z = delta_Z
 
     else:
-        norme_laser=sqrt(laser_twist.linear.x*laser_twist.linear.x+laser_twist.linear.y*laser_twist.linear.y)
-        norme_max=max(min(1,norme_laser),norme_max) 
-        
-        cmd_twist.linear.x = data.linear.x + delta * laser_twist.linear.x/norme_max
-        cmd_twist.linear.y = data.linear.y + delta * laser_twist.linear.y/norme_max
+        norme_laser = sqrt(laser_twist.linear.x * laser_twist.linear.x + laser_twist.linear.y * laser_twist.linear.y)
+        norme_max = max(min(1, norme_laser), norme_max)
 
+        cmd_twist.linear.x = data.linear.x + delta * laser_twist.linear.x / norme_max
+        cmd_twist.linear.y = data.linear.y + delta * laser_twist.linear.y / norme_max
 
-#        norme=max(1,sqrt(cmd_twist.linear.x * cmd_twist.linear.x + cmd_twist.linear.y * cmd_twist.linear.y))
-        
-#        cmd_twist.linear.x = cmd_twist.linear.x / norme
-#        cmd_twist.linear.y = cmd_twist.linear.y / norme
+    #        norme=max(1,sqrt(cmd_twist.linear.x * cmd_twist.linear.x + cmd_twist.linear.y * cmd_twist.linear.y))
 
-    prod_scal=cmd_twist.linear.x*data.linear.x+cmd_twist.linear.y*data.linear.y
-    if prod_scal<0:
-        prod_scal=-cmd_twist.linear.x*data.linear.y+cmd_twist.linear.y*data.linear.x
-        if prod_scal<0:
-            cmd_twist.linear.x=data.linear.y
-            cmd_twist.linear.y=-data.linear.x
+    #        cmd_twist.linear.x = cmd_twist.linear.x / norme
+    #        cmd_twist.linear.y = cmd_twist.linear.y / norme
+
+    prod_scal = cmd_twist.linear.x * data.linear.x + cmd_twist.linear.y * data.linear.y
+    if prod_scal < 0:
+        prod_scal = -cmd_twist.linear.x * data.linear.y + cmd_twist.linear.y * data.linear.x
+        if prod_scal < 0:
+            cmd_twist.linear.x = data.linear.y
+            cmd_twist.linear.y = -data.linear.x
         else:
-            cmd_twist.linear.x=-data.linear.y
-            cmd_twist.linear.y=data.linear.x
-				
+            cmd_twist.linear.x = -data.linear.y
+            cmd_twist.linear.y = data.linear.x
+
     cmd_twist.angular.z += data.angular.z
 
     cmd_twist.linear.z = 0.0
@@ -85,7 +85,7 @@ def get_joy(data):
     print("EMERGENCY_STOP_FRONT:")
     print(EMERGENCY_STOP_FRONT)
     print("EMERGENCY_STOP_BACK:")
-    print(EMERGENCY_STOP_BACK)    
+    print(EMERGENCY_STOP_BACK)
 
 
 def get_lasers(data):
@@ -97,21 +97,19 @@ def get_lasers(data):
     tw.angular.y = 0.0
     tw.angular.z = 0.0
     nbobstacles = 0.0
-    
+
     global joy_twist
     # Calcul de l'angle du joy
     if joy_twist.linear.x == 0.0:
         angle_joy = 0.0
     else:
-		angle_joy = atan(joy_twist.linear.y/joy_twist.linear.x)
-    
-    
-    
+        angle_joy = atan(joy_twist.linear.y / joy_twist.linear.x)
+
     for i in range(61):  # 61 points on laser 3*15 + 2*8 points on dead angles
         angle = data.angle_min + i * data.angle_increment
-        coeff_angle=0.5
-        if angle_joy-1.0 < angle < angle_joy+1.0:
-			coeff_angle=1.5
+        coeff_angle = 0.5
+        if angle_joy - 1.0 < angle < angle_joy + 1.0:
+            coeff_angle = 1.5
         if 0.0 < data.ranges[i] < DETECTION_DISTANCE:
             nbobstacles = nbobstacles + 1.0
             # - for repulsive vector
@@ -137,22 +135,23 @@ def get_sonar_front(data):
     global EMERGENCY_STOP_FRONT
     EMERGENCY_STOP_FRONT = 0
     obstacleDist = data.range
-    
+
     if obstacleDist < CRITICAL_DISTANCE:
         EMERGENCY_STOP_FRONT = 1
     else:
         EMERGENCY_STOP_FRONT = 0
 
+
 def get_sonar_back(data):
     global EMERGENCY_STOP_BACK
     EMERGENCY_STOP_BACK = 0
     obstacleDist = data.range
-    
+
     if obstacleDist < CRITICAL_DISTANCE:
         EMERGENCY_STOP_BACK = 1
     else:
         EMERGENCY_STOP_BACK = 0
-    
+
 
 def obstacle_avoidance():
     # Publish the 'cmd_vel' topic using Twist messages
