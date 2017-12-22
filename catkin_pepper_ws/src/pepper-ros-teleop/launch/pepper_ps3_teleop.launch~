@@ -1,0 +1,65 @@
+<!--
+  Driver for the PS3_SIXAXIS
+
+
+#define PS3_BUTTON_SELECT            0
+#define PS3_BUTTON_STICK_LEFT        1
+#define PS3_BUTTON_STICK_RIGHT       2
+#define PS3_BUTTON_START             3
+#define PS3_BUTTON_CROSS_UP          4
+#define PS3_BUTTON_CROSS_RIGHT       5
+#define PS3_BUTTON_CROSS_DOWN        6
+#define PS3_BUTTON_CROSS_LEFT        7
+#define PS3_BUTTON_REAR_LEFT_2       8
+#define PS3_BUTTON_REAR_RIGHT_2      9
+#define PS3_BUTTON_REAR_LEFT_1       10
+#define PS3_BUTTON_REAR_RIGHT_1      11
+#define PS3_BUTTON_ACTION_TRIANGLE   12
+#define PS3_BUTTON_ACTION_CIRCLE     13
+#define PS3_BUTTON_ACTION_CROSS      14
+#define PS3_BUTTON_ACTION_SQUARE     15
+#define PS3_BUTTON_PAIRING           16
+
+#define PS3_AXIS_STICK_LEFT_LEFTWARDS    0
+#define PS3_AXIS_STICK_LEFT_UPWARDS      1
+#define PS3_AXIS_STICK_RIGHT_LEFTWARDS   2
+#define PS3_AXIS_STICK_RIGHT_UPWARDS     3
+#define PS3_AXIS_BUTTON_CROSS_UP         4
+#define PS3_AXIS_BUTTON_CROSS_RIGHT      5
+#define PS3_AXIS_BUTTON_CROSS_DOWN       6
+#define PS3_AXIS_BUTTON_CROSS_LEFT       7
+#define PS3_AXIS_BUTTON_REAR_LEFT_2      8
+#define PS3_AXIS_BUTTON_REAR_RIGHT_2     9
+#define PS3_AXIS_BUTTON_REAR_LEFT_1      10
+#define PS3_AXIS_BUTTON_REAR_RIGHT_1     11
+#define PS3_AXIS_BUTTON_ACTION_TRIANGLE  12
+#define PS3_AXIS_BUTTON_ACTION_CIRCLE    13
+#define PS3_AXIS_BUTTON_ACTION_CROSS     14
+#define PS3_AXIS_BUTTON_ACTION_SQUARE    15
+#define PS3_AXIS_ACCELEROMETER_LEFT      16
+#define PS3_AXIS_ACCELEROMETER_FORWARD   17
+#define PS3_AXIS_ACCELEROMETER_UP        18
+#define PS3_AXIS_GYRO_YAW                19
+-->
+<launch>
+
+  <node pkg="pepper_teleop" type="pepper_teleop" name="pepper_teleop_joystick">
+    <param name="scale_angular" value="1"/>
+    <param name="scale_linear" value="0.35"/>
+    <param name="axis_deadman" value="9"/> <!-- PS3_BUTTON_REAR_RIGHT_2-->
+    <param name="toogle_head_button" value="8"/> <!-- PS3_BUTTON_REAR_LEFT_2-->
+    <param name="axis_linear" value="1"/> <!-- PS3_AXIS_STICK_LEFT_UPWARDS -->	
+    <param name="axis_linear_y" value="0"/> <!--PS3_AXIS_STICK_LEFT_LEFTWARDS -->
+    <param name="axis_angular" value="2"/> <!--PS3_AXIS_STICK_RIGHT_LEFTWARDS-->
+    <param name="axis_head_yaw" value="2"/>  <!--PS3_AXIS_STICK_RIGHT_LEFTWARDS-->
+    <param name="axis_head_pitch" value="3"/>  <!--PS3_AXIS_STICK_RIGHT_UPWARDS  -->
+    <param name="head_speed_factor" value="0.1"/>;
+    <remap from="pepper_teleop_joystick/cmd_vel" to="cmd_vel"/>
+    <remap from="pepper_teleop_joystick/pose/joint_angles" to="/pepper_robot/pose/joint_angles"/>
+  </node>
+
+  <node pkg="joy" type="joy_node" name="joystick" >
+    <param name="dev" value="/dev/input/js1"/>
+  </node>
+
+</launch>

@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: pepper_teleop
+Description: Description of pepper_teleop
+Version: 0.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 
