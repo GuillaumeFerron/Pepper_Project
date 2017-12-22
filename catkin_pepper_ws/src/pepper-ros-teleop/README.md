@@ -1,6 +1,9 @@
 pepper_teleop
 ================
 
+
+This directory is a copy of Fabrice Jumel repo, to be able to access it in our project the git directory(so the git remote) has been removed and thus the current directory isn't linked to Fabrice Jumel's repo anymore. To be able to get any updates you can find his repo to : https://github.com/fabricejumel/pepper-ros-teleop.git
+
 Simple Pepper Teleoperation implementation based on turtlebot one.
 
 raw version. Test only in ubuntu 14.04, ros indigo
